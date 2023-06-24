@@ -37,7 +37,17 @@ class DealDetail extends React.Component {
                 <Text style={styles.price}>{priceDisplay(deal.price)}</Text>
             </View>
         </View>
+        {deal.user && (
+            <View>
+                <Image source={{ uri: deal.user.avatar }} style={styles.avatar} />
+                <Text>{deal.user.name}</Text>
+            </View>
+        )}
+            <View>
+                <Text>{deal.description}</Text>
+            </View>
       </View>
+
     )
   }
 }
@@ -74,6 +84,10 @@ const styles = StyleSheet.create({
     price: {
         flex: 1,
         textAlign: 'right',
+    },
+    avatar: {
+        width: 60,
+        height: 60,
     }
 })
 

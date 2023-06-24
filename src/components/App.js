@@ -20,8 +20,13 @@ class App extends React.Component {
     setCurrentDeal = (dealId) => {
         this.setState({ 
             currentDealId: dealId
-        });
-        
+        }); 
+    }
+
+    unsetCurrentDeal = () => {
+        this.setState({ 
+            currentDealId: null
+        }); 
     }
 
     currentDeal = () => {
@@ -32,7 +37,7 @@ class App extends React.Component {
 
   render() {
     if (this.state.currentDealId) {
-        return <DealDetail initialDealData={this.currentDeal()} />
+        return <DealDetail initialDealData={this.currentDeal()} onBack={this.unsetCurrentDeal} />
     }
     if (this.state.deals.length > 0) {
         return <DealList deals={this.state.deals} onItemPress={this.setCurrentDeal} />

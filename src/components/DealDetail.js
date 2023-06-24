@@ -2,15 +2,27 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import { priceDisplay } from '../util';
+import ajax from '../ajax';
 
 class DealDetail extends React.Component {
 
     static propTypes = {
-        deal: PropTypes.object.isRequired
+        initialDealData: PropTypes.object.isRequired,
+    };
+
+    state = {
+        deal: this.props.initialDealData,
+    };
+
+    async componentDidMount() {
+        const fullDeal = await ajax.fetchDealDetail(this.state.deal.key);
+        this.setState({
+            deal: fullDeal,
+        });
     }
 
   render() {
-    const { deal } = this.props;
+    const { deal } = this.state;
 
     return (
       <View style={styles.deal}>

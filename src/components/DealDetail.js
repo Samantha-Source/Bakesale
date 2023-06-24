@@ -1,10 +1,55 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, Image, Button, StyleSheet, ScrollView, TouchableOpacity, PanResponder, Animated, Dimensions, Linking, Pressable } from 'react-native';
 import { priceDisplay } from '../util';
 import ajax from '../ajax';
 
 class DealDetail extends React.Component {
+
+    imageXPos = new Animated.Value(0);
+
+    imagePanResponder = PanResponder.create({
+        onStartShouldSetPanResponder: () => true,
+        onPanResponderMove: (event, gestureState) => {
+            this.imageXPos.setValue(gestureState.dx);
+        },
+        onPanResponderRelease: (event, gestureState) => {
+            this.width = Dimensions.get('window').width;
+            if (Math.abs(gestureState.dx) > this.width * 0.4) {
+                const direction = Math.sign(gestureState.dx);
+                Animated.timing(this.imageXPos, {
+                    toValue: direction * this.width,
+                    duration: 250,
+                    useNativeDriver: false,
+                }).start(() => this.handleSwipe(-1 * direction));
+            } else {
+                Animated.spring(this.imageXPos, {
+                    toValue: 0,
+                    useNativeDriver: false,
+                }).start();
+            }
+        }
+    })
+
+    handleSwipe = (indexDirection) => {
+        if (!this.state.deal.media[this.state.imageIndex + indexDirection]) {
+            Animated.spring(this.imageXPos, {
+                toValue: 0,
+                useNativeDriver: false,
+            }).start()
+            return;
+        }
+        this.setState((prevState) => ({
+            imageIndex: prevState.imageIndex + indexDirection
+        }), () => {
+            // Animate next image
+            this.imageXPos.setValue(indexDirection * this.width);
+            Animated.spring(this.imageXPos, {
+                toValue: 0,
+                useNativeDriver: false,
+            }).start()
+        })
+    }
 
     static propTypes = {
         initialDealData: PropTypes.object.isRequired,
@@ -13,6 +58,7 @@ class DealDetail extends React.Component {
 
     state = {
         deal: this.props.initialDealData,
+        imageIndex: 0,
     };
 
     async componentDidMount() {
@@ -20,6 +66,10 @@ class DealDetail extends React.Component {
         this.setState({
             deal: fullDeal,
         });
+    }
+
+    openDealUrl = () => {
+        Linking.openURL(this.state.deal.url);
     }
 
   render() {
@@ -30,9 +80,10 @@ class DealDetail extends React.Component {
         <TouchableOpacity onPress={this.props.onBack}>
             <Text style={styles.backLink}>Back</Text>
         </TouchableOpacity>
-        <Image 
-            source={{ uri: deal.media[0] }} 
-            style={styles.image}
+        <Animated.Image 
+            {...this.imagePanResponder.panHandlers}
+            source={{ uri: deal.media[this.state.imageIndex] }} 
+            style={[{ left: this.imageXPos }, styles.image]}
         />
         <View style={styles.info}>
             <Text style={styles.title}>{deal.title}</Text>
@@ -53,6 +104,13 @@ class DealDetail extends React.Component {
             <View style={styles.description}>
                 <Text style={styles.descriptionText}>{deal.description}</Text>
             </View>
+
+            <View style={styles.buttonContainer}>
+                <Pressable style={styles.buyButton} onPress={this.openDealUrl}>
+                    <Text style={styles.buttonText}>Buy this deal!</Text>
+                </Pressable>
+            </View>
+
       </ScrollView>
 
     )
@@ -83,7 +141,6 @@ const styles = StyleSheet.create({
     info: {
         backgroundColor: '#fff',
         borderColor: '#bbb',
-        // borderWidth: 1,
         borderTopWidth: 0,
     },
     title: {
@@ -98,7 +155,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
-        // marginTop: 15,
         paddingHorizontal: '5%',
         paddingVertical: 5,
         marginVertical: 5
@@ -142,6 +198,27 @@ const styles = StyleSheet.create({
     descriptionText: {
         fontSize: 14,
         fontWeight: '500',
+        color: 'black',
+    }, 
+    buttonContainer: {
+        paddingTop: 10,
+        width: 300,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignSelf: 'center',
+    },
+    buyButton: {
+        backgroundColor: '#b5e48c',
+        height: 40,
+        borderRadius: 5,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 100,
+        fontWeight: 'bold',
+        borderWidth: .5
+    }, 
+    buttonText: {
+        fontWeight: 'bold',
         color: 'black',
     }
 })

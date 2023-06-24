@@ -89,6 +89,7 @@ class App extends React.Component {
 const styles = StyleSheet.create({
     main: {
         marginTop: 20,
+        paddingBottom: 100,
     },
     container: {
         flex: 1,

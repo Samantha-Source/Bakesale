@@ -27,6 +27,7 @@ class SearchBar extends React.Component {
         style={styles.input}
         placeholder='Search All Deals'
         onChangeText={this.handleChange}
+        cursorColor={'blue'}
         />
     )
   }
@@ -35,7 +36,7 @@ class SearchBar extends React.Component {
 const styles = StyleSheet.create({
     input: {
         height: 40,
-        backgroundColor: '#ddd',
+        backgroundColor: 'rgba(253, 197, 0, 0.2)',
         marginHorizontal: 20,
         borderRadius: 10,
         marginBottom: 10,

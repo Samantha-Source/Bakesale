@@ -118,13 +118,13 @@ class DealDetail extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    // deal: {
-    //     marginHorizontal: 12,
-    //     marginTop: 20,
-    //     borderColor: '#bbb',
-    //     borderWidth: 1,
-    //     borderRadius: 10,
-    // },
+    deal: {
+        // marginHorizontal: 12,
+        // marginTop: 20,
+        // borderColor: '#bbb',
+        // borderWidth: 1,
+        // borderRadius: 10,
+    },
     backLink: {
         marginBottom: 5,
         marginTop: 2,
@@ -206,6 +206,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignSelf: 'center',
+        marginBottom: 20
     },
     buyButton: {
         backgroundColor: '#b5e48c',

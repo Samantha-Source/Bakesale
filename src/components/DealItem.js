@@ -41,10 +41,8 @@ const styles = StyleSheet.create({
         marginTop: 12,
     },
     image: {
-        resizeMode: 'contain',
         width: '100%',
-        height: 150,
-        backgroundColor: '#e6ccb2',
+        height: 200,
     },
     info: {
         padding: 10,
